@@ -1,0 +1,103 @@
+## 4. State Transition Diagram (Mermaid)
+
+```mermaid
+
+stateDiagram-v2
+
+    [*] --&gt; Raised
+
+    Raised --&gt; InReview: Auto-assign to Approver 1
+
+    InReview --&gt; ApprovedStep1: Approver 1 accepts
+
+    InReview --&gt; RejectedReview: Approver 1 rejects
+
+    ApprovedStep1 --&gt; InReview2: Escalate to Approver 2
+
+    InReview2 --&gt; Approved: Approver 2 accepts
+
+    InReview2 --&gt; RejectedReview: Approver 2 rejects
+
+    RejectedReview --&gt; Draft: Notify requester; reset to draft
+
+    Draft --&gt; InReview: Requester resubmits
+
+    Approved --&gt; Completed: Final step done; all stakeholders notified
+
+    Completed --&gt; [*]
+
+    InReview --&gt; Escalated: SLA breach (&gt;2 days pending)
+
+    Escalated --&gt; InReview: Admin reassigns to manager
+
+    RejectedReview --&gt; Cancelled: Requester gives up (soft-delete)
+
+    Cancelled --&gt; [*]
+
+    note right of InReview
+
+        Max 5 days pending
+
+        Escalate if breached
+
+    end note
+
+    note right of RejectedReview
+
+        Requester has 14 days
+
+        to resubmit
+
+    end note
+
+```
+
+### Key Transitions Explained
+
+<table>
+  <tr>
+   <td>undefined</td>
+   <td>undefined</td>
+   <td>undefined</td>
+   <td>undefined</td>
+   <td>undefined</td>
+  </tr>
+  <tr>
+   <td>Raised</td>
+   <td>In Review</td>
+   <td>System auto-route</td>
+   <td>System</td>
+   <td>Happens instantly upon creation</td>
+  </tr>
+  <tr>
+   <td>In Review</td>
+   <td>Approved</td>
+   <td>Manual approval</td>
+   <td>Approver</td>
+   <td>Logged with timestamp &amp; comment</td>
+  </tr>
+  <tr>
+   <td>In Review</td>
+   <td>Rejected</td>
+   <td>Manual rejection</td>
+   <td>Approver</td>
+   <td>Reason required; resets to Draft</td>
+  </tr>
+  <tr>
+   <td>Approved</td>
+   <td>Completed</td>
+   <td>Final step + notification</td>
+   <td>System</td>
+   <td>Triggers downstream actions (calendar updates, etc.)</td>
+  </tr>
+  <tr>
+   <td>In Review</td>
+   <td>Escalated</td>
+   <td>SLA breach (2+ days)</td>
+   <td>System</td>
+   <td>Auto-escalate to manager if no response</td>
+  </tr>
+</table>
+
+ \
+

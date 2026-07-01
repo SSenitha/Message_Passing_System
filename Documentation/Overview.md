@@ -1,0 +1,59 @@
+## 1. Project Overview &amp; Value Proposition
+
+### The Core Problem
+
+<table>
+  <tr>
+        <td> Problem Domain</td>
+        <td> Current State</td>
+        <td> Impact</td>
+  </tr>
+  <tr>
+        <td> Manual Handoffs</td>
+        <td> Email/chat-based approval chains</td>
+        <td> Lost context, no audit trail </td>
+  </tr>
+  <tr>
+        <td> Zero Visibility</td>
+        <td> Stakeholders don&#39;t know ticket status</td>
+        <td> Repeated follow-ups, wasted time</td>
+  </tr>
+  <tr>
+        <td> Untracked Bottlenecks</td>
+        <td> No history of delays or failures</td>
+        <td> Can&#39;t optimize process flow</td>
+  </tr>
+  <tr>
+        <td> Compliance Risk</td>
+        <td> No centralized audit trail</td>
+        <td> Audit failures, regulatory exposure</td>
+  </tr>
+</table>
+
+    Our Solution: The Workflow Engine
+
+<br>
+
+A **stateful middleware layer** that:
+
+* **Abstracts complexity**: Reduces any business process (approvals, approvals, supply chains) to a simple **state machine**
+
+* **Ensures auditability**: Logs every state transition, actor, and timestamp in an immutable activity log
+
+* **Enables prioritization**: Surfaces the most urgent tickets using intelligent algorithms
+
+* **Scales via APIs**: Let external systems (university portals, ERP platforms) integrate seamlessly
+
+* **Enforces compliance**: Soft-deletes preserve history; role-based access controls restrict sensitive workflows
+
+<br>
+
+**Why API-First?**
+
+1. **Decoupled**: Frontend, backend, and third-party integrations are independent
+
+2. **Scalable**: Support hundreds of concurrent workflows without bottlenecks
+
+3. **Extensible**: Custom business logic layers on top without core changes
+
+4. **Future-proof**: Integrate with legacy systems, modern SaaS, or mobile clients

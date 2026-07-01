@@ -1,0 +1,110 @@
+## 3. Core Functional Requirements: The CRUD Matrix**
+
+**How Business Actions Map to CRUD Operations**
+
+<table>
+      <tr  style="text-align:center">
+            <td> undefined</td>
+            <td> undefined</td>
+            <td> undefined</td>
+            <td> undefined</td>
+      </tr>
+      <tr>
+            <td> CREATE</td>
+            <td style="text-align:center"> C</td>
+            <td> Raise a new ticket</td>
+            <td> Employee submits leave request</td>
+      </tr>
+      <tr>
+            <td> READ</td>
+            <td style="text-align:center"> R</td>
+            <td> View ticket details &amp; timeline</td>
+            <td> Approver sees memo + all comments</td>
+      </tr>
+      <tr>
+            <td> UPDATE</td>
+            <td style="text-align:center"> U</td>
+            <td> Transition state / add action</td>
+            <td> Manager approves; system moves ticket forward</td>
+      </tr>
+      <tr>
+            <td> DELETE</td>
+            <td style="text-align:center"> D</td>
+            <td> Archive/retire ticket</td>
+            <td> Close completed ticket; preserve in audit log.</td>
+      </tr>
+</table>
+
+<hr>
+
+### Create (Raising a Ticket)
+
+**System validates:**
+
+* Requester has permission to raise this ticket type
+
+* All required fields present (title, description, assignee rule)
+
+* Assigns initial state: Raised
+
+* Logs activity: 
+      
+      [CREATED] Ticket #1234 by user@org.com at 2024-01-15 09:00 UTC
+      Read (Viewing Tickets &amp; History)
+
+**Endpoints return:**
+
+* **Ticket summary:** ID, title, current state, assigned-to, created date, due date
+
+* **Activity timeline:** Chronological log of all transitions, approvals, comments, and rejections
+
+* **Access control:** Only users with role-based permission can view sensitive tickets
+
+**Use case:** Approver opens dashboard, sees 47 pending tickets, filters by &quot;Overdue&quot; or &quot;Budget-related.&quot;
+
+      Update (State Transitions &amp; Actions)
+
+**Valid state transitions** (see State Diagram below):
+
+* Raised → In Review (auto, by system)
+
+* In Review → Approved (manual, by approver)
+
+* In Review → Rejected (manual, by approver with reason)
+
+* Rejected → Draft (auto, notify requester)
+
+* Approved → Completed (auto or manual, when all steps done)
+
+**Logs every transition:**
+
+      [APPROVED] Ticket #1234 by manager@org.com (role: Manager) at 2024-01-15 10:30 UTC \
+      Reason: &quot;Budget looks good. Proceed.&quot;
+<br>
+      Delete (Soft-Delete &amp; Archival)
+
+**Why Soft-Delete (NOT Hard-Delete)?**
+
+* **Compliance:** Audit trails must be immutable; hard deletes violate SOX, HIPAA, GDPR
+
+* **Debugging:** Understand why a ticket was closed; full history preserved
+
+* **Analytics:** Historical data remains available for bottleneck analysis
+
+**Implementation:**
+
+* Add is_archived = TRUE flag to tickets table
+
+* Soft-deleted tickets hidden from active views but queryable via audit reports
+
+* Implement **data retention policy:** Soft-deleted tickets auto-purged after 7 years (configurable)
+
+**Example:**
+
+      -- User-initiated delete
+      UPDATE tickets SET is_archived = TRUE, archived_at = NOW(), archived_by = user_id
+      WHERE ticket_id = 1234;
+
+      -- System still tracks it
+      SELECT * FROM activity_log WHERE ticket_id = 1234;
+      -- Returns full history even after soft-delete
